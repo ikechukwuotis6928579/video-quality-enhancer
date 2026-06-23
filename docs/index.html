@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Quality Enhancer — 4K Upscaler & FPS Booster</title>
+    <meta name="description" content="AI-powered video enhancement tool that upscales any video to 4K resolution and increases frame rate for buttery-smooth playback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-surface: #1a1a2e;
+            --border: #2a2a3e;
+            --text: #e8e8f0;
+            --text-muted: #8888a0;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --gradient-1: #6366f1;
+            --gradient-2: #a855f7;
+            --gradient-3: #06b6d4;
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(168,85,247,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 0%, rgba(6,182,212,0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: bg-shift 20s ease-in-out infinite;
+        }
+
+        @keyframes bg-shift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -1%) rotate(0.5deg); }
+            66% { transform: translate(-1%, 1%) rotate(-0.5deg); }
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 30px var(--accent-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-surface);
+            border-color: var(--accent);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .btn-ghost:hover { color: var(--text); }
+
+        /* Hero */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2), var(--gradient-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features */
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon.purple { background: rgba(168, 85, 247, 0.15); }
+        .feature-icon.blue { background: rgba(99, 102, 241, 0.15); }
+        .feature-icon.cyan { background: rgba(6, 182, 212, 0.15); }
+        .feature-icon.green { background: rgba(34, 197, 94, 0.15); }
+
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Demo / Comparison */
+        .demo {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .demo h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .compare-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .compare-card .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .compare-card .label.before { color: var(--warning); }
+        .compare-card .label.after { color: var(--success); }
+
+        .compare-card .resolution {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        .compare-card .res-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .compare-card .fps-display {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .arrow-between {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .specs-row {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .spec-item {
+            text-align: center;
+        }
+
+        .spec-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .spec-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        /* Installation */
+        .install {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .install h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .code-block {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .code-block .lang-tag {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            font-size: 0.6875rem;
+            color: var(--text-muted);
+            background: var(--bg-surface);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            color: #c8c8d8;
+        }
+
+        pre .comment { color: #6a6a80; }
+        pre .keyword { color: #a855f7; }
+        pre .string { color: #22c55e; }
+        pre .func { color: #6366f1; }
+
+        /* Usage */
+        .usage {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .usage h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .usage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .usage-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .usage-item .cmd {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .usage-item .desc {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        footer p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8125rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 4rem 1.5rem 2rem; }
+            .comparison { grid-template-columns: 1fr; }
+            .arrow-between { transform: rotate(90deg); }
+            .nav-links .btn { display: none; }
+            footer { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">🎬</div>
+            Enhance
+        </div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#usage">Usage</a>
+            <a href="#install">Install</a>
+            <a href="https://github.com/ikechukwuotis6928579/video-quality-enhancer" target="_blank" class="btn btn-ghost">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>✨ Open Source</span>
+        </div>
+        <h1>Transform Any Video to <span>4K Quality</span></h1>
+        <p>
+            AI-powered video enhancement tool that upscales any video to 4K resolution 
+            and boosts frame rate for buttery-smooth playback.
+        </p>
+        <div class="hero-actions">
+            <a href="#install" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Get Started
+            </a>
+            <a href="https://github.com/ikechukwuotis6928579/video-quality-enhancer" target="_blank" class="btn btn-outline">
+                View on GitHub
+            </a>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="demo">
+        <h2>See the Difference</h2>
+        <div class="comparison">
+            <div class="compare-card">
+                <div class="label before">Before</div>
+                <div class="resolution">720p</div>
+                <div class="res-label">Standard Definition</div>
+                <div class="fps-display">30 fps</div>
+            </div>
+            <div class="arrow-between">→</div>
+            <div class="compare-card">
+                <div class="label after">After</div>
+                <div class="resolution">4K</div>
+                <div class="res-label">Ultra High Definition</div>
+                <div class="fps-display">60 fps</div>
+            </div>
+        </div>
+        <div class="specs-row">
+            <div class="spec-item">
+                <div class="spec-value">4K</div>
+                <div class="spec-label">Resolution</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-value">3840×2160</div>
+                <div class="spec-label">Pixels</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-value">120fps</div>
+                <div class="spec-label">Max Frame Rate</div>
+            </div>
+            <div class="spec-item">
+                <div class="spec-value">Batch</div>
+                <div class="spec-label">Processing</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <h2>Why Use Video Enhancer?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon purple">🚀</div>
+                <h3>4K Upscaling</h3>
+                <p>
+                    Intelligent upscaling using Lanczos algorithm with sharpening enhancement. 
+                    Transform 720p/1080p footage into crisp 4K.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon blue">⚡</div>
+                <h3>FPS Boosting</h3>
+                <p>
+                    Motion-compensated frame interpolation creates smooth high-frame-rate video. 
+                    ​Go from 30fps to 60fps or even 120fps.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon cyan">📦</div>
+                <h3>Batch Processing</h3>
+                <p>
+                    Process entire folders of videos at once. 
+                    Set it and walk away — perfect for large libraries.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green">🎯</div>
+                <h3>Audio Preserved</h3>
+                <p>
+                    Original audio is preserved untouched through the enhancement pipeline. 
+                    No quality loss on sound.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage -->
+    <section class="usage" id="usage">
+        <h2>Quick Usage</h2>
+        <div class="usage-grid">
+            <div class="usage-item">
+                <div class="cmd">python enhance.py video.mp4 --to-4k</div>
+                <div class="desc">Upscale any video to 4K resolution</div>
+            </div>
+            <div class="usage-item">
+                <div class="cmd">python enhance.py video.mp4 --to-4k --fps 60</div>
+                <div class="desc">4K upscale + smooth 60fps</div>
+            </div>
+            <div class="usage-item">
+                <div class="cmd">python enhance.py video.mp4 --to-4k --fps 120</div>
+                <div class="desc">4K upscale + ultra-smooth 120fps</div>
+            </div>
+            <div class="usage-item">
+                <div class="cmd">python enhance.py ./videos/ -o ./enhanced/ --to-4k</div>
+                <div class="desc">Batch process entire folders</div>
+            </div>
+            <div class="usage-item">
+                <div class="cmd">python enhance.py video.mp4 --info</div>
+                <div class="desc">Preview video info before processing</div>
+            </div>
+            <div class="usage-item">
+                <div class="cmd">python enhance.py video.mp4 --to-4k --hwaccel</div>
+                <div class="desc">Use NVIDIA GPU acceleration</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Install -->
+    <section class="install" id="install">
+        <h2>Get Started in Seconds</h2>
+        <div class="code-block">
+            <span class="lang-tag">bash</span>
+            <pre><span class="comment"># Clone the repo</span>
+git clone https://github.com/ikechukwuotis6928579/video-quality-enhancer.git
+cd video-quality-enhancer
+
+<span class="comment"># Install dependencies</span>
+pip install -r requirements.txt
+
+<span class="comment"># Install FFmpeg (if not installed)</span>
+sudo apt install ffmpeg -y
+
+<span class="comment"># Enhance your first video</span>
+python enhance.py your-video.mp4 --to-4k --fps 60</pre>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 <a href="https://github.com/ikechukwuotis6928579" style="color: var(--text); text-decoration: none;">Ikechukwu Otis</a> — MIT License</p>
+        <div class="footer-links">
+            <a href="https://github.com/ikechukwuotis6928579/video-quality-enhancer">GitHub</a>
+            <a href="https://github.com/ikechukwuotis6928579/video-quality-enhancer/blob/main/README.md">Docs</a>
+        </div>
+    </footer>
+
+</body>
+</html>
